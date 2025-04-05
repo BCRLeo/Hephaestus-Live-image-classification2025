@@ -1,0 +1,16 @@
+ultalytics/models/yolo/predict.py
+
+Changed lines: 50, 52-67, 69-83
+I just edited it so it passes the full predictions to the Results object
+____________________________________________________________________________________________________________
+ultralytics/engine/results.py
+
+Changed lines: 279, 835-852
+
+Setting Results.full_preds and defining full_summary which outputs the structured probability vector
+____________________________________________________________________________________________________________
+ultalytics/models/yolo/utils/ops.py
+
+Changed lines: 290, 334-339
+
+Defining the full probability vector and filtering out only the relevant boxes (maybe this can be done more efficiently, I kinds did it in the simplest way possible)
