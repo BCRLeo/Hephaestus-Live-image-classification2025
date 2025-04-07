@@ -287,7 +287,7 @@ def non_max_suppression(
             i, j = torch.where(cls > conf_thres)
             x = torch.cat((box[i], x[i, 4 + j, None], j[:, None].float(), mask[i]), 1)
         else:  # best class only
-            full_prob = torch.cat((box, cls, mask), 1)
+            full_prob = torch.cat((box, cls, mask), 1) #added this line
 
             conf, j = cls.max(1, keepdim=True)
             x = torch.cat((box, conf, j.float(), mask), 1)[conf.view(-1) > conf_thres]
@@ -331,7 +331,7 @@ def non_max_suppression(
             LOGGER.warning(f"WARNING ⚠️ NMS time limit {time_limit:.3f}s exceeded")
             break  # time limit exceeded
     
-    full_pred_final = []
+    full_pred_final = [] #added creation of prediction vector 
     for image in output:
         for box in image:
             for full in full_prob:

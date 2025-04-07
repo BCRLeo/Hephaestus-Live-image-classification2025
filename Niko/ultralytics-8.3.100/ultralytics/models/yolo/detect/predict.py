@@ -47,9 +47,11 @@ class DetectionPredictor(BasePredictor):
         if not isinstance(orig_imgs, list):  # input images are a torch.Tensor, not a list
             orig_imgs = ops.convert_torch2numpy_batch(orig_imgs)
 
-        return self.construct_results(preds, img, orig_imgs, full_preds, **kwargs)
+        
 
-    def construct_results(self, preds, img, orig_imgs, full_preds):
+        return self.construct_results(preds, img, orig_imgs, full_preds, **kwargs) #adds full_preds to return 
+
+    def construct_results(self, preds, img, orig_imgs, full_preds): #adds full_preds as a parameter
         """
         Construct a list of Results objects from model predictions.
 
@@ -63,7 +65,7 @@ class DetectionPredictor(BasePredictor):
         """
         return [
             self.construct_result(pred, img, orig_img, img_path, full_preds)
-            for pred, orig_img, img_path in zip(preds, orig_imgs, self.batch[0])
+            for pred, orig_img, img_path in zip(preds, orig_imgs, self.batch[0]) #same here, adds full_preds to return string
         ]
 
     def construct_result(self, pred, img, orig_img, img_path, full_preds):
@@ -80,4 +82,4 @@ class DetectionPredictor(BasePredictor):
             (Results): Results object containing the original image, image path, class names, and scaled bounding boxes.
         """
         pred[:, :4] = ops.scale_boxes(img.shape[2:], pred[:, :4], orig_img.shape)
-        return Results(orig_img, path=img_path, names=self.model.names, boxes=pred[:, :6], full_preds=full_preds)
+        return Results(orig_img, path=img_path, names=self.model.names, boxes=pred[:, :6], full_preds=full_preds) #here as well ads full_preds

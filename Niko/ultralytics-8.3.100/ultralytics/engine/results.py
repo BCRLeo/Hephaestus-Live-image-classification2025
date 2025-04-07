@@ -276,7 +276,7 @@ class Results(SimpleClass):
         self.path = path
         self.save_dir = None
         self._keys = "boxes", "masks", "probs", "keypoints", "obb"
-        self.full_preds = full_preds
+        self.full_preds = full_preds #added full preds 
 
     def __getitem__(self, idx):
         """
@@ -832,7 +832,7 @@ class Results(SimpleClass):
 
         return results
     
-    def full_summary(self):
+    def full_summary(self): # New function for full summary 
         full_preds = self.full_preds
         class_names = self.names
         output = []
