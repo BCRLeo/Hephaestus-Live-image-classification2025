@@ -107,6 +107,7 @@ def train_distillation(
 
     # Training loop
     student.model.eval().to(device)
+    student.model.custom_train = True
     
     teacher.model.eval().to(device)
         
@@ -143,7 +144,7 @@ if __name__ == "__main__":
     train_distillation(
         teacher_weights='yolov8n.pt',
         student_config='yolov8n.yaml',
-        data_dir='test_images',
+        data_dir=r'C:\Users\leona\AppData\Local\Programs\Python\Hephaestus-Live-image-classification2025\Niko\ultralytics-8.3.100\test_images',
         epochs=5,
         batch_size=8
     )
