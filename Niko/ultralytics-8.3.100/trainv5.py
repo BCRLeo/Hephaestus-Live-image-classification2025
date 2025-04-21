@@ -106,7 +106,7 @@ def train_distillation(
     optimizer = torch.optim.AdamW(student.model.parameters(), lr=1e-4)
 
     # Training loop
-    student.model.train().to(device)
+    student.model.eval().to(device)
     
     teacher.model.eval().to(device)
         
@@ -142,7 +142,7 @@ def train_distillation(
 if __name__ == "__main__":
     train_distillation(
         teacher_weights='yolov8n.pt',
-        student_config='yolov8r.pt',
+        student_config='yolov8n.yaml',
         data_dir='test_images',
         epochs=5,
         batch_size=8
