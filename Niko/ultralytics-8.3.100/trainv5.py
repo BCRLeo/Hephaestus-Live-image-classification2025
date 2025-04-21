@@ -5,6 +5,8 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 from ultralytics import YOLO
 import cv2
+
+import ultralytics.nn.modules.head as head 
     
 class YOLOKDDataset(Dataset):
     def __init__(self, image_dir, teacher_model, img_size=640, device= 'mps' if torch.backends.mps.is_available() else 'cpu'):
@@ -28,8 +30,8 @@ class YOLOKDDataset(Dataset):
         with torch.no_grad():
             for img_path in self.image_paths:
                 img = self.load_image(img_path)
-                results = self.teacher.model(img.unsqueeze(0))
-                self.teacher_preds.append(results[0].squeeze(0).transpose(0, 1))
+                results = self.teacher.model(img.unsqueeze(0))[0].squeeze(0)[:, :84]
+                self.teacher_preds.append(results)
         self.teacher_preds = torch.stack(self.teacher_preds).to(self.device)
 
     def __len__(self):
@@ -106,7 +108,7 @@ def train_distillation(
     optimizer = torch.optim.AdamW(student.model.parameters(), lr=1e-4)
 
     # Training loop
-    student.model.eval().to(device)
+    student.model.train().to(device)
     student.model.custom_train = True
     
     teacher.model.eval().to(device)
@@ -119,7 +121,10 @@ def train_distillation(
             
             images.requires_grad_()
             # Perform forward pass
-            student_preds = student.model.forward(images)[0]
+            #temp = student.model.forward(images)
+            raw = student.model(images, augment=False)[0]    # (B, 8400, 85)
+            student_preds = raw[..., :84] 
+            #student_preds = head.y_main["tensor"]
             student_preds = student_preds.transpose(1, 2)
             
             # Compute loss
